@@ -35,6 +35,7 @@ dependencies {
 	//compile('org.vaadin.spring.addons:vaadin-spring-addon-sidebar:0.0.7.RELEASE')
 	//compile('org.vaadin.spring.addons:vaadin-spring-addon-eventbus:0.0.7.RELEASE')
 	//compile("org.vaadin:viritin:1.55")
+	compile 'com.vaadin:vaadin-server:8.1.5'
     compile('com.fasterxml.jackson.datatype:jackson-datatype-jdk8:2.7.8')
     compile(group: 'com.fasterxml.jackson.datatype', name: 'jackson-datatype-jsr310', version: '2.7.8')
 	compile('org.springframework.boot:spring-boot-starter-web')

@@ -1,5 +1,10 @@
 package com.barsness;
 
+import com.barsness.budget.view.AssignTransactionView;
+import com.barsness.budget.view.BudgetCategoryView;
+import com.barsness.budget.view.TransactionView;
+import com.barsness.core.ErrorView;
+import com.barsness.core.WelcomeView;
 import com.vaadin.annotations.Theme;
 import com.vaadin.annotations.Title;
 import com.vaadin.navigator.Navigator;
@@ -10,13 +15,8 @@ import com.vaadin.spring.annotation.SpringUI;
 import com.vaadin.ui.*;
 import com.vaadin.ui.themes.ValoTheme;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.client.RestTemplate;
 
 import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -35,6 +35,7 @@ public class VaadinUI extends UI {
         menu.setId("mainMenu");
     }
     private Navigator navigator;
+
     @Autowired
     public VaadinUI(){
 
@@ -49,9 +50,11 @@ public class VaadinUI extends UI {
         root.addMenu(buildMenu());
         addStyleName(ValoTheme.UI_WITH_MENU);
         navigator = new Navigator(this, viewDisplay);
-        navigator.addView("viewTransaction", TransactionView.class);
+        navigator.addView(TransactionView.VIEW_NAME, TransactionView.class);
         navigator.addView("error", ErrorView.class);
         navigator.addView("welcome", WelcomeView.class);
+        navigator.addView(BudgetCategoryView.VIEW_NAME, BudgetCategoryView.class);
+        navigator.addView(AssignTransactionView.VIEW_NAME, AssignTransactionView.class);
 
         String f = Page.getCurrent().getUriFragment();
         if (f == null || f.equals("")) {
@@ -62,8 +65,7 @@ public class VaadinUI extends UI {
 
         Responsive.makeResponsive(this);
 
-
-        /*        navigator.addViewChangeListener(new ViewChangeListener() {
+        navigator.addViewChangeListener(new ViewChangeListener() {
 
             @Override
             public boolean beforeViewChange(ViewChangeEvent event) {
@@ -72,28 +74,13 @@ public class VaadinUI extends UI {
 
             @Override
             public void afterViewChange(ViewChangeEvent event) {
-                for (Iterator<Component> it = menuItemsLayout.iterator(); it
+               /* for (Iterator<Component> it = menuItemsLayout.iterator(); it
                         .hasNext();) {
                     it.next().removeStyleName("selected");
-                }
-                for (Map.Entry<String, String> item : menuItems.entrySet()) {
-                    if (event.getViewName().equals(item.getKey())) {
-                        for (Iterator<Component> it = menuItemsLayout
-                                .iterator(); it.hasNext();) {
-                            Component c = it.next();
-                            if (c.getCaption() != null
-                                    && c.getCaption().startsWith(
-                                    item.getValue())) {
-                                c.addStyleName("selected");
-                                break;
-                            }
-                        }
-                        break;
-                    }
-                }
+                }*/
                 menu.removeStyleName("valo-menu-visible");
             }
-        });*/
+        });
 
     }
 
@@ -131,16 +118,57 @@ public class VaadinUI extends UI {
         label.setSizeUndefined();
         menuItemsLayout.addComponent(label);
 
-        Button viewTransactionsButton = new Button("View Transaction", new Button.ClickListener() {
+        Button viewTransactionsButton = new Button("Transactions", new Button.ClickListener() {
             @Override
             public void buttonClick(Button.ClickEvent event) {
-                navigator.navigateTo("viewTransaction");
+                for (Iterator<Component> it = menuItemsLayout.iterator(); it
+                        .hasNext();) {
+                    it.next().removeStyleName("selected");
+                }
+                event.getButton().addStyleName("selected");
+                navigator.navigateTo(TransactionView.VIEW_NAME);
             }
         });
         viewTransactionsButton.setHtmlContentAllowed(true);
         viewTransactionsButton.setPrimaryStyleName(ValoTheme.MENU_ITEM);
         viewTransactionsButton.setIcon(FontAwesome.DOLLAR);
         menuItemsLayout.addComponent(viewTransactionsButton);
+
+        Button viewBudgetCategoryButton = new Button("Budget Categories", new Button.ClickListener(){
+            @Override
+            public void buttonClick(Button.ClickEvent event) {
+                for (Iterator<Component> it = menuItemsLayout.iterator(); it
+                        .hasNext();) {
+                    it.next().removeStyleName("selected");
+                }
+                event.getButton().addStyleName("selected");
+                navigator.navigateTo(BudgetCategoryView.VIEW_NAME);
+            }
+        });
+        viewBudgetCategoryButton.setHtmlContentAllowed(true);
+        viewBudgetCategoryButton.setPrimaryStyleName(ValoTheme.MENU_ITEM);
+        viewBudgetCategoryButton.setIcon(FontAwesome.BARS);
+        menuItemsLayout.addComponent(viewBudgetCategoryButton);
+
+        Button viewAssignTransactionButton = new Button("Assign Transactions", new Button.ClickListener(){
+            @Override
+            public void buttonClick(Button.ClickEvent event) {
+                for (Iterator<Component> it = menuItemsLayout.iterator(); it
+                        .hasNext();) {
+                    it.next().removeStyleName("selected");
+                }
+                event.getButton().addStyleName("selected");
+                navigator.navigateTo(AssignTransactionView.VIEW_NAME);
+            }
+        });
+        viewAssignTransactionButton.setHtmlContentAllowed(true);
+        viewAssignTransactionButton.setPrimaryStyleName(ValoTheme.MENU_ITEM);
+        viewAssignTransactionButton.setIcon(FontAwesome.ARROWS_H);
+        menuItemsLayout.addComponent(viewAssignTransactionButton);
+
+
         return menu;
+
+
     }
 }

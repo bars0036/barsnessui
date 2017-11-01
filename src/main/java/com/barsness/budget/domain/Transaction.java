@@ -1,7 +1,9 @@
-package com.barsness;
+package com.barsness.budget.domain;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.List;
 
 public class Transaction {
     private Long id;
@@ -14,11 +16,13 @@ public class Transaction {
     private BigDecimal value;
     private String source;
     private LocalDateTime dateCreated;
+    private List<BudgetTransaction> budgetTransactions;
 
     public Transaction() {
     }
 
-    public Transaction(LocalDateTime transactionDate, String description, String institution, String account, String category, Boolean isHidden, BigDecimal value, String source) {
+    public Transaction(Long id, LocalDateTime transactionDate, String description, String institution, String account, String category, Boolean isHidden, BigDecimal value, String source, LocalDateTime dateCreated, List<BudgetTransaction> budgetTransactions) {
+        this.id = id;
         this.transactionDate = transactionDate;
         this.description = description;
         this.institution = institution;
@@ -27,7 +31,35 @@ public class Transaction {
         this.isHidden = isHidden;
         this.value = value;
         this.source = source;
-        this.dateCreated = LocalDateTime.now();
+        this.dateCreated = dateCreated;
+        this.budgetTransactions = budgetTransactions;
+    }
+
+    public Boolean getHidden() {
+        return isHidden;
+    }
+
+    public List<BudgetTransaction> getBudgetTransactions() {
+        return budgetTransactions;
+    }
+
+    public void setBudgetTransactions(List<BudgetTransaction> budgetTransactions) {
+        this.budgetTransactions = budgetTransactions;
+    }
+
+    public boolean isAssigned(){
+        if(budgetTransactions != null){
+            BigDecimal totalAssigned = new BigDecimal(0);
+            for(BudgetTransaction budgetTrans:budgetTransactions){
+                if(budgetTrans.getValue() != null) {
+                    totalAssigned = totalAssigned.add(budgetTrans.getValue());
+                }
+            }
+            if(totalAssigned.compareTo(this.value) == 0){
+                return true;
+            }
+        }
+        return false;
     }
 
     public Long getId() {
@@ -48,6 +80,11 @@ public class Transaction {
 
     public LocalDateTime getTransactionDate() {
         return transactionDate;
+    }
+
+    public String getTransactionDateString(){
+        DateTimeFormatter format = DateTimeFormatter.ofPattern("MM-dd-yyyy");
+        return transactionDate.format(format);
     }
 
     public void setTransactionDate(LocalDateTime tranactionDate) {
